@@ -18,7 +18,7 @@ export function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-1">
             <img 
-              src="/attached_assets/logo sorongkab_1759287170945.png" 
+              src="/assets/logo-sorong.png" 
               alt="Logo Kabupaten Sorong" 
               className="h-16 w-auto mb-4"
             />

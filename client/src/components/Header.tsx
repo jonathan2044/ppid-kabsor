@@ -31,7 +31,7 @@ export function Header() {
           {/* Logo */}
           <div className="flex items-center gap-3">
             <img 
-              src="/attached_assets/logo sorongkab_1759287170945.png" 
+              src="/assets/logo-sorong.png" 
               alt="Logo Kabupaten Sorong" 
               className="h-14 w-auto"
             />
