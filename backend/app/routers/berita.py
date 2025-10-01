@@ -10,7 +10,7 @@ from ..models import Berita
 from ..schemas import BeritaResponse
 from ..auth import get_current_admin_user
 
-router = APIRouter(prefix="/api/berita", tags=["berita"])
+router = APIRouter(prefix="/berita", tags=["berita"])
 
 UPLOAD_DIR = Path("client/public/uploads")
 

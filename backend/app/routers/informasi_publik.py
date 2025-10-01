@@ -9,7 +9,7 @@ from ..models import InformasiPublik, KategoriInformasiEnum
 from ..schemas import InformasiPublikResponse
 from ..auth import get_current_admin_user
 
-router = APIRouter(prefix="/api/informasi-publik", tags=["informasi_publik"])
+router = APIRouter(prefix="/informasi-publik", tags=["informasi_publik"])
 
 UPLOAD_DIR = Path("client/public/uploads")
 

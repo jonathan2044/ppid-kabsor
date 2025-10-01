@@ -10,7 +10,7 @@ from ..models import Permohonan, StatusPermohonanEnum
 from ..schemas import PermohonanResponse
 from ..auth import get_current_admin_user
 
-router = APIRouter(prefix="/api/permohonan", tags=["permohonan"])
+router = APIRouter(prefix="/permohonan", tags=["permohonan"])
 
 UPLOAD_DIR = Path("client/public/uploads")
 

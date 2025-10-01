@@ -1,10 +1,34 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { spawn } from "child_process";
+import { join } from "path";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Start FastAPI backend
+const backendPath = join(process.cwd(), 'backend');
+const backendProcess = spawn('python', ['run.py'], {
+  cwd: backendPath,
+  stdio: ['ignore', 'pipe', 'pipe'],
+  detached: false
+});
+
+backendProcess.stdout?.on('data', (data) => {
+  console.log(`[FastAPI] ${data.toString().trim()}`);
+});
+
+backendProcess.stderr?.on('data', (data) => {
+  console.error(`[FastAPI Error] ${data.toString().trim()}`);
+});
+
+backendProcess.on('exit', (code) => {
+  console.log(`[FastAPI] Backend exited with code ${code}`);
+});
+
+log('[express] Started FastAPI backend process');
 
 app.use((req, res, next) => {
   const start = Date.now();

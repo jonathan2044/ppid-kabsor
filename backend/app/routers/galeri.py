@@ -9,7 +9,7 @@ from ..models import Galeri
 from ..schemas import GaleriResponse
 from ..auth import get_current_admin_user
 
-router = APIRouter(prefix="/api/galeri", tags=["galeri"])
+router = APIRouter(prefix="/galeri", tags=["galeri"])
 
 UPLOAD_DIR = Path("client/public/uploads")
 

@@ -94,8 +94,10 @@ class Berita(Base):
     id = Column(Integer, primary_key=True, index=True)
     judul = Column(String(255), nullable=False)
     slug = Column(String(255), unique=True, nullable=False, index=True)
+    kategori = Column(String(50), default="Berita")
     konten = Column(Text, nullable=False)
     gambar = Column(String(255))
+    penulis = Column(String(100), default="Admin PPID")
     tanggal_publikasi = Column(DateTime(timezone=True), server_default=func.now())
     views = Column(Integer, default=0)
 
@@ -112,6 +114,7 @@ class FAQ(Base):
     __tablename__ = "faq"
     
     id = Column(Integer, primary_key=True, index=True)
+    kategori = Column(String(100), default="Umum")
     pertanyaan = Column(Text, nullable=False)
     jawaban = Column(Text, nullable=False)
     urutan = Column(Integer, default=0)

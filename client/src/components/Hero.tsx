@@ -1,13 +1,27 @@
 import { Button } from '@/components/ui/button';
 import { PapuaPattern } from './PapuaPattern';
 import { FileText, Search } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+
+interface HeroContent {
+  title: string;
+  subtitle: string;
+  bg_image: string;
+}
 
 export function Hero() {
+  const { data: heroContent } = useQuery<HeroContent>({
+    queryKey: ['/api/pengaturan/hero'],
+  });
+
   return (
     <section className="relative w-full h-[600px] overflow-hidden">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-primary-900/95 to-primary-800/70 z-10" />
-      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070')] bg-cover bg-center" />
+      <div 
+        className="absolute inset-0 bg-cover bg-center" 
+        style={{ backgroundImage: `url(${heroContent?.bg_image || 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070'})` }}
+      />
       
       {/* Papua Pattern Overlay */}
       <PapuaPattern className="absolute inset-0 z-20 text-gold" opacity={0.08} />
@@ -15,10 +29,10 @@ export function Hero() {
       {/* Content */}
       <div className="relative z-30 container mx-auto px-4 h-full flex flex-col items-center justify-center text-center">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 font-serif">
-          Portal PPID Kabupaten Sorong
+          {heroContent?.title || 'Portal PPID Kabupaten Sorong'}
         </h1>
         <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl">
-          Transparansi dan Keterbukaan Informasi Publik untuk Masyarakat Kabupaten Sorong
+          {heroContent?.subtitle || 'Transparansi dan Keterbukaan Informasi Publik untuk Masyarakat Kabupaten Sorong'}
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4">

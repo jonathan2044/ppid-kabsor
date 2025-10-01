@@ -6,7 +6,7 @@ from ..models import FAQ
 from ..schemas import FAQCreate, FAQResponse
 from ..auth import get_current_admin_user
 
-router = APIRouter(prefix="/api/faq", tags=["faq"])
+router = APIRouter(prefix="/faq", tags=["faq"])
 
 @router.post("/create", response_model=FAQResponse)
 def create_faq(

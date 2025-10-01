@@ -8,7 +8,7 @@ print(f"[FastAPI] Starting PPID Kabupaten Sorong API...")
 print(f"[FastAPI] DATABASE_URL is {'set' if os.getenv('DATABASE_URL') else 'NOT SET'}")
 
 from .database import engine, Base
-from .routers import auth, permohonan, informasi_publik, berita, galeri, faq
+from .routers import auth, permohonan, informasi_publik, berita, galeri, faq, pengaturan, stats
 
 print(f"[FastAPI] Creating database tables...")
 try:
@@ -38,6 +38,8 @@ app.include_router(informasi_publik.router)
 app.include_router(berita.router)
 app.include_router(galeri.router)
 app.include_router(faq.router)
+app.include_router(pengaturan.router)
+app.include_router(stats.router)
 
 @app.get("/api/health")
 def health_check():
