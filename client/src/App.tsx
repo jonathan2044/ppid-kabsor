@@ -14,6 +14,11 @@ import { Footer } from "@/components/Footer";
 import NotFound from "@/pages/not-found";
 import PermohonanPage from "@/pages/PermohonanPage";
 import TrackingPage from "@/pages/TrackingPage";
+import InformasiPublikPage from "@/pages/InformasiPublikPage";
+import BeritaPage from "@/pages/BeritaPage";
+import ProfilPPIDPage from "@/pages/ProfilPPIDPage";
+import FAQPage from "@/pages/FAQPage";
+import KontakPage from "@/pages/KontakPage";
 
 function HomePage() {
   return (
@@ -37,6 +42,11 @@ function Router() {
       <Route path="/" component={HomePage} />
       <Route path="/permohonan" component={PermohonanPage} />
       <Route path="/tracking" component={TrackingPage} />
+      <Route path="/informasi-publik" component={InformasiPublikPage} />
+      <Route path="/berita" component={BeritaPage} />
+      <Route path="/profil-ppid" component={ProfilPPIDPage} />
+      <Route path="/faq" component={FAQPage} />
+      <Route path="/kontak" component={KontakPage} />
       <Route component={NotFound} />
     </Switch>
   );

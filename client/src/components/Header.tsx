@@ -7,21 +7,37 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
-  const navItems = [
+  interface NavItem {
+    label: string;
+    href?: string;
+    items?: { label: string; href: string }[];
+  }
+
+  const navItems: NavItem[] = [
     {
       label: 'Profil',
-      items: ['Visi & Misi', 'Struktur Organisasi', 'Tugas & Fungsi', 'SK & Pedoman', 'Instrument KIP', 'Maklumat Pelayanan', 'SOP PPID']
+      href: '/profil-ppid'
     },
     {
       label: 'Informasi Publik',
-      items: ['Daftar Informasi Publik', 'Informasi Berkala', 'Informasi Serta-Merta', 'Informasi Setiap Saat', 'Informasi Dikecualikan']
+      href: '/informasi-publik'
     },
     {
       label: 'Layanan',
-      items: ['Permohonan Informasi', 'Tracking Permohonan', 'Pengajuan Keberatan', 'Tata Cara & Alur', 'Layanan Disabilitas', 'FAQ']
+      items: [
+        { label: 'Permohonan Informasi', href: '/permohonan' },
+        { label: 'Tracking Permohonan', href: '/tracking' },
+        { label: 'FAQ', href: '/faq' }
+      ]
     },
-    { label: 'Berita', items: [] },
-    { label: 'Kontak', items: [] }
+    { 
+      label: 'Berita', 
+      href: '/berita'
+    },
+    { 
+      label: 'Kontak', 
+      href: '/kontak'
+    }
   ];
 
   return (
@@ -43,33 +59,43 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-6">
-            <a href="/" className="text-sm font-medium text-foreground hover-elevate px-3 py-2 rounded-md transition-colors">
+            <a href="/" className="text-sm font-medium text-foreground hover-elevate px-3 py-2 rounded-md transition-colors" data-testid="nav-beranda">
               Beranda
             </a>
             {navItems.map((item) => (
               <div key={item.label} className="relative group">
-                <button className="flex items-center gap-1 text-sm font-medium text-foreground hover-elevate px-3 py-2 rounded-md transition-colors">
-                  {item.label}
-                  {item.items.length > 0 && <ChevronDown className="h-3 w-3" />}
-                </button>
-                {item.items.length > 0 && (
-                  <div className="absolute left-0 mt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                    <div className="bg-popover border border-popover-border rounded-md shadow-lg py-2">
-                      {item.items.map((subItem) => (
-                        <a
-                          key={subItem}
-                          href="#"
-                          className="block px-4 py-2 text-sm text-popover-foreground hover-elevate transition-colors"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            console.log(`Navigate to: ${subItem}`);
-                          }}
-                        >
-                          {subItem}
-                        </a>
-                      ))}
+                {item.items && item.items.length > 0 ? (
+                  <>
+                    <button 
+                      className="flex items-center gap-1 text-sm font-medium text-foreground hover-elevate px-3 py-2 rounded-md transition-colors"
+                      data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}-dropdown`}
+                    >
+                      {item.label}
+                      <ChevronDown className="h-3 w-3" />
+                    </button>
+                    <div className="absolute left-0 mt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                      <div className="bg-popover border border-popover-border rounded-md shadow-lg py-2">
+                        {item.items.map((subItem) => (
+                          <a
+                            key={subItem.label}
+                            href={subItem.href}
+                            className="block px-4 py-2 text-sm text-popover-foreground hover-elevate transition-colors"
+                            data-testid={`nav-${subItem.label.toLowerCase().replace(/ /g, '-')}`}
+                          >
+                            {subItem.label}
+                          </a>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  </>
+                ) : (
+                  <a 
+                    href={item.href} 
+                    className="flex items-center gap-1 text-sm font-medium text-foreground hover-elevate px-3 py-2 rounded-md transition-colors"
+                    data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+                  >
+                    {item.label}
+                  </a>
                 )}
               </div>
             ))}
@@ -122,26 +148,41 @@ export function Header() {
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="lg:hidden border-t border-border/40 py-4 px-4 space-y-4">
-            <a href="/" className="block py-2 text-sm font-medium text-foreground" onClick={() => setMobileMenuOpen(false)}>
+            <a href="/" className="block py-2 text-sm font-medium text-foreground" onClick={() => setMobileMenuOpen(false)} data-testid="mobile-nav-beranda">
               Beranda
             </a>
             {navItems.map((item) => (
               <div key={item.label} className="space-y-2">
-                <div className="text-sm font-semibold text-foreground">{item.label}</div>
-                {item.items.map((subItem) => (
+                {item.items && item.items.length > 0 ? (
+                  <>
+                    <div 
+                      className="text-sm font-semibold text-foreground"
+                      data-testid={`mobile-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}-heading`}
+                    >
+                      {item.label}
+                    </div>
+                    {item.items.map((subItem) => (
+                      <a
+                        key={subItem.label}
+                        href={subItem.href}
+                        className="block py-2 pl-4 text-sm text-muted-foreground hover:text-foreground"
+                        onClick={() => setMobileMenuOpen(false)}
+                        data-testid={`mobile-nav-${subItem.label.toLowerCase().replace(/ /g, '-')}`}
+                      >
+                        {subItem.label}
+                      </a>
+                    ))}
+                  </>
+                ) : (
                   <a
-                    key={subItem}
-                    href="#"
-                    className="block py-2 pl-4 text-sm text-muted-foreground hover:text-foreground"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      console.log(`Navigate to: ${subItem}`);
-                      setMobileMenuOpen(false);
-                    }}
+                    href={item.href}
+                    className="block py-2 text-sm font-medium text-foreground"
+                    onClick={() => setMobileMenuOpen(false)}
+                    data-testid={`mobile-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
                   >
-                    {subItem}
+                    {item.label}
                   </a>
-                ))}
+                )}
               </div>
             ))}
           </div>
