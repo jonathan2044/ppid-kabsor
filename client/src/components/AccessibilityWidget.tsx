@@ -127,7 +127,8 @@ export function AccessibilityWidget() {
       <Button
         size="icon"
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed left-6 top-1/2 -translate-y-1/2 z-50 h-14 w-14 rounded-full shadow-lg bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+        className="fixed left-6 z-50 h-14 w-14 rounded-full shadow-lg bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+        style={{ top: 'calc(50vh - 3.5rem)' }}
         data-testid="button-accessibility-toggle"
         aria-label="Toggle Accessibility Menu"
       >
@@ -135,7 +136,7 @@ export function AccessibilityWidget() {
       </Button>
 
       {isOpen && (
-        <Card className="fixed left-6 top-1/2 -translate-y-1/2 z-50 w-96 max-h-[600px] overflow-y-auto shadow-2xl" data-testid="panel-accessibility">
+        <Card className="fixed left-6 z-50 w-96 max-h-[600px] overflow-y-auto shadow-2xl" style={{ top: 'calc(50vh - 300px)' }} data-testid="panel-accessibility">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
             <CardTitle className="text-lg font-bold">Menu Aksesibilitas (CTRL+U)</CardTitle>
             <Button
