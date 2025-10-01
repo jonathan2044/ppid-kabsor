@@ -2,9 +2,22 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Target, Users, Scale, Building2, BookOpen, Shield } from 'lucide-react';
+import { Target, Users, Scale, Building2, BookOpen } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+
+interface ProfilInfo {
+  tentang: string;
+  visi: string;
+  misi: string[];
+  tugas_pokok: string;
+  fungsi: string[];
+}
 
 export default function ProfilPPIDPage() {
+  const { data: profilInfo } = useQuery<ProfilInfo>({
+    queryKey: ['/api/pengaturan/profil'],
+  });
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -26,13 +39,7 @@ export default function ProfilPPIDPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">
-                Pejabat Pengelola Informasi dan Dokumentasi (PPID) Kabupaten Sorong adalah lembaga yang bertanggung jawab 
-                dalam pengelolaan dan pelayanan informasi publik di lingkungan Pemerintah Kabupaten Sorong. PPID dibentuk 
-                untuk memenuhi amanat Undang-Undang Nomor 14 Tahun 2008 tentang Keterbukaan Informasi Publik.
-              </p>
-              <p className="text-muted-foreground">
-                PPID Kabupaten Sorong berkomitmen untuk menyediakan informasi publik yang akurat, berkualitas, dan mudah 
-                diakses oleh masyarakat sebagai wujud transparansi dan akuntabilitas penyelenggaraan pemerintahan.
+                {profilInfo?.tentang || 'Memuat informasi...'}
               </p>
             </CardContent>
           </Card>
@@ -48,19 +55,16 @@ export default function ProfilPPIDPage() {
               <div>
                 <h3 className="font-semibold mb-2">Visi</h3>
                 <p className="text-muted-foreground">
-                  Mewujudkan pelayanan informasi publik yang transparan, akuntabel, dan berkualitas untuk meningkatkan 
-                  partisipasi masyarakat dalam pembangunan Kabupaten Sorong.
+                  {profilInfo?.visi || 'Memuat visi...'}
                 </p>
               </div>
               <Separator />
               <div>
                 <h3 className="font-semibold mb-3">Misi</h3>
                 <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-                  <li>Menyediakan dan memberikan informasi publik yang akurat, lengkap, dan terkini</li>
-                  <li>Membangun sistem pengelolaan informasi dan dokumentasi yang efektif dan efisien</li>
-                  <li>Meningkatkan kualitas layanan informasi publik melalui pemanfaatan teknologi informasi</li>
-                  <li>Mendorong partisipasi aktif masyarakat dalam pengawasan penyelenggaraan pemerintahan</li>
-                  <li>Memastikan perlindungan hak-hak pemohon informasi sesuai dengan ketentuan perundang-undangan</li>
+                  {profilInfo?.misi?.map((item, index) => (
+                    <li key={index}>{item}</li>
+                  )) || <li>Memuat misi...</li>}
                 </ol>
               </div>
             </CardContent>
@@ -123,21 +127,16 @@ export default function ProfilPPIDPage() {
                 <div>
                   <h3 className="font-semibold mb-2">Tugas Pokok</h3>
                   <p className="text-muted-foreground mb-3">
-                    Melaksanakan pengelolaan, penyimpanan, pendokumentasian, penyediaan, dan pelayanan informasi publik 
-                    di lingkungan Pemerintah Kabupaten Sorong.
+                    {profilInfo?.tugas_pokok || 'Memuat tugas pokok...'}
                   </p>
                 </div>
                 <Separator />
                 <div>
                   <h3 className="font-semibold mb-3">Fungsi</h3>
                   <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                    <li>Penghimpunan informasi publik dari seluruh unit kerja di lingkungan Pemkab Sorong</li>
-                    <li>Pengklasifikasian dan pendokumentasian informasi publik</li>
-                    <li>Penyediaan dan pelayanan informasi publik kepada masyarakat</li>
-                    <li>Pengelolaan sistem informasi dan dokumentasi</li>
-                    <li>Pengujian konsekuensi atas informasi yang dikecualikan</li>
-                    <li>Pemutakhiran informasi publik secara berkala</li>
-                    <li>Penyusunan laporan pelaksanaan pelayanan informasi publik</li>
+                    {profilInfo?.fungsi?.map((item, index) => (
+                      <li key={index}>{item}</li>
+                    )) || <li>Memuat fungsi...</li>}
                   </ul>
                 </div>
               </div>

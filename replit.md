@@ -38,9 +38,11 @@ Preferred communication style: Simple, everyday language.
 - `auth.py`: User authentication and registration (JWT-based)
 - `permohonan.py`: Information request submission and tracking
 - `informasi_publik.py`: Public document management
-- `berita.py`: News/announcements management
+- `berita.py`: News/announcements management (with kategori, penulis fields)
 - `galeri.py`: Photo gallery management
-- `faq.py`: Frequently asked questions management
+- `faq.py`: Frequently asked questions management (with kategori field)
+- `pengaturan.py`: Dynamic content management (hero, kontak, profil, footer)
+- `stats.py`: Real-time statistics and counts (dashboard, info-categories)
 
 **Authentication**: JWT (JSON Web Tokens) using the `python-jose` library. Tokens are issued on login and validated using HTTPBearer security scheme. Password hashing uses bcrypt via `passlib`.
 
@@ -61,9 +63,12 @@ Preferred communication style: Simple, everyday language.
 - `users`: Admin and operator accounts with role-based access
 - `permohonan`: Information requests with status tracking (menunggu, diproses, selesai, ditolak)
 - `informasi_publik`: Categorized public documents (berkala, serta_merta, setiap_saat)
-- `berita`: News articles with slugs and view tracking
+- `berita`: News articles with slugs, kategori, penulis, and view tracking
 - `galeri`: Photo gallery items
-- `faq`: Frequently asked questions with ordering
+- `faq`: Frequently asked questions with kategori and ordering
+- `pengaturan`: Key-value store for dynamic site content (hero, kontak, profil settings)
+- `informasi_dikecualikan`: Excluded information categories
+- `dokumen_khusus`: Special government documents
 
 **File Storage**: Uploaded files (KTP scans, documents, images) are stored in `client/public/uploads/` with organized subfolders. File paths are stored as strings in the database.
 
@@ -118,6 +123,27 @@ Required environment variables:
 - `SESSION_SECRET`: JWT signing key (defaults to insecure value—must be changed in production)
 - `BACKEND_PORT`: FastAPI server port (defaults to 8000)
 - `FASTAPI_URL`: FastAPI server URL for proxy (defaults to `http://localhost:8000`)
+
+### Dynamic Content System
+
+**ALL content is now database-driven** - no hardcoded content remains in the application:
+
+**Homepage Components** (all fetch from API):
+- Hero section → `/api/pengaturan/hero` (title, subtitle, bg_image)
+- Statistics Dashboard → `/api/stats/dashboard` (real-time permohonan counts and metrics)
+- Info Categories → `/api/stats/info-categories` (real-time document counts per category)
+- News Section → `/api/berita/list` (latest 3 news items)
+
+**Pages** (all fetch from API):
+- Kontak → `/api/pengaturan/kontak` (alamat, telepon, fax, email, jam layanan)
+- Profil PPID → `/api/pengaturan/profil` (tentang, visi, misi, tugas, fungsi)
+- Berita → `/api/berita/list` (news with kategori and penulis)
+- FAQ → `/api/faq/list` (with kategori grouping)
+- Informasi Publik → `/api/informasi-publik/list` (categorized documents with counts)
+
+**Backend Auto-Start**: FastAPI backend is automatically spawned by Node.js Express server on startup via `child_process.spawn()`, eliminating need for separate backend process management.
+
+**Proxy Configuration**: Express server proxies all `/api/*` requests to FastAPI backend at `http://localhost:8000` with proper pathRewrite.
 
 ### Production Considerations
 

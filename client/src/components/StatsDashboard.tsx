@@ -17,6 +17,13 @@ const iconMap: Record<string, any> = {
   FileText,
 };
 
+const colorBgMap: Record<string, string> = {
+  'text-primary': 'bg-primary/10',
+  'text-chart-1': 'bg-chart-1/10',
+  'text-gold': 'bg-gold/10',
+  'text-chart-3': 'bg-chart-3/10',
+};
+
 export function StatsDashboard() {
   const { data: statsData, isLoading } = useQuery<{ stats: Stat[] }>({
     queryKey: ['/api/stats/dashboard'],
@@ -41,7 +48,7 @@ export function StatsDashboard() {
               return (
                 <Card key={index} className="p-6" data-testid={`stat-${stat.label.toLowerCase().replace(/\s+/g, '-')}`}>
                   <div className="flex items-start justify-between mb-4">
-                    <div className={`p-2 rounded-lg bg-${stat.color.split('-')[1]}/10`}>
+                    <div className={`p-2 rounded-lg ${colorBgMap[stat.color] || 'bg-primary/10'}`}>
                       <Icon className={`h-5 w-5 ${stat.color}`} />
                     </div>
                   </div>

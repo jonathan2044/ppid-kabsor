@@ -2,8 +2,22 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { MapPin, Phone, Mail, Clock, Building2 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+
+interface KontakInfo {
+  alamat: string;
+  telepon: string;
+  fax: string;
+  email: string;
+  jam_senin_kamis: string;
+  jam_jumat: string;
+}
 
 export default function KontakPage() {
+  const { data: kontakInfo } = useQuery<KontakInfo>({
+    queryKey: ['/api/pengaturan/kontak'],
+  });
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -29,11 +43,8 @@ export default function KontakPage() {
                   <MapPin className="h-5 w-5 text-muted-foreground mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="font-medium mb-1">PPID Kabupaten Sorong</p>
-                    <p className="text-sm text-muted-foreground">
-                      Kantor Bupati Kabupaten Sorong<br />
-                      Jl. Pemerintahan No. 1<br />
-                      Aimas, Kabupaten Sorong<br />
-                      Papua Barat Daya 98417
+                    <p className="text-sm text-muted-foreground whitespace-pre-line">
+                      {kontakInfo?.alamat || 'Memuat...'}
                     </p>
                   </div>
                 </div>
@@ -50,11 +61,11 @@ export default function KontakPage() {
               <CardContent className="space-y-3">
                 <div>
                   <p className="font-medium mb-1">Senin - Kamis</p>
-                  <p className="text-sm text-muted-foreground">08:00 - 16:00 WIT</p>
+                  <p className="text-sm text-muted-foreground">{kontakInfo?.jam_senin_kamis || '08:00 - 16:00 WIT'}</p>
                 </div>
                 <div>
                   <p className="font-medium mb-1">Jumat</p>
-                  <p className="text-sm text-muted-foreground">08:00 - 11:30 WIT</p>
+                  <p className="text-sm text-muted-foreground">{kontakInfo?.jam_jumat || '08:00 - 11:30 WIT'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground italic">
@@ -75,21 +86,21 @@ export default function KontakPage() {
                 <Phone className="h-5 w-5 text-muted-foreground" />
                 <div>
                   <p className="text-sm text-muted-foreground">Telepon</p>
-                  <p className="font-medium">(0951) 321234</p>
+                  <p className="font-medium">{kontakInfo?.telepon || '(0951) 321234'}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-muted-foreground" />
                 <div>
                   <p className="text-sm text-muted-foreground">Fax</p>
-                  <p className="font-medium">(0951) 321235</p>
+                  <p className="font-medium">{kontakInfo?.fax || '(0951) 321235'}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-muted-foreground" />
                 <div>
                   <p className="text-sm text-muted-foreground">Email</p>
-                  <p className="font-medium">ppid@sorongkab.go.id</p>
+                  <p className="font-medium">{kontakInfo?.email || 'ppid@sorongkab.go.id'}</p>
                 </div>
               </div>
             </CardContent>
