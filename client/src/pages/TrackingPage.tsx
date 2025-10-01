@@ -56,15 +56,15 @@ export default function TrackingPage() {
   };
 
   const getStatusBadge = (status: string) => {
-    const statusConfig = {
-      menunggu: { variant: 'secondary' as const, label: 'Menunggu' },
-      diproses: { variant: 'default' as const, label: 'Diproses' },
-      selesai: { variant: 'default' as const, label: 'Selesai', className: 'bg-green-600' },
-      ditolak: { variant: 'destructive' as const, label: 'Ditolak' },
+    const statusConfig: Record<string, { variant: 'secondary' | 'default' | 'destructive'; label: string; className?: string }> = {
+      menunggu: { variant: 'secondary', label: 'Menunggu' },
+      diproses: { variant: 'default', label: 'Diproses' },
+      selesai: { variant: 'default', label: 'Selesai', className: 'bg-green-600' },
+      ditolak: { variant: 'destructive', label: 'Ditolak' },
     };
 
-    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.menunggu;
-    return <Badge variant={config.variant} className={config.className}>{config.label}</Badge>;
+    const config = statusConfig[status] || statusConfig.menunggu;
+    return <Badge variant={config.variant} className={config.className || ''}>{config.label}</Badge>;
   };
 
   return (
