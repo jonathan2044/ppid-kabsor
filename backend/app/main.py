@@ -2,10 +2,21 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
+import os
+
+print(f"[FastAPI] Starting PPID Kabupaten Sorong API...")
+print(f"[FastAPI] DATABASE_URL is {'set' if os.getenv('DATABASE_URL') else 'NOT SET'}")
+
 from .database import engine, Base
 from .routers import auth, permohonan, informasi_publik, berita, galeri, faq
 
-Base.metadata.create_all(bind=engine)
+print(f"[FastAPI] Creating database tables...")
+try:
+    Base.metadata.create_all(bind=engine)
+    print(f"[FastAPI] Database tables created successfully!")
+except Exception as e:
+    print(f"[FastAPI] Error creating database tables: {e}")
+    raise
 
 app = FastAPI(title="PPID Kabupaten Sorong API", version="1.0.0")
 
