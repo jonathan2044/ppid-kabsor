@@ -3,6 +3,7 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AccessibilityWidget } from "@/components/AccessibilityWidget";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { QuickAccessCards } from "@/components/QuickAccessCards";
@@ -10,6 +11,9 @@ import { InfoCategories } from "@/components/InfoCategories";
 import { StatsDashboard } from "@/components/StatsDashboard";
 import { NewsSection } from "@/components/NewsSection";
 import { Footer } from "@/components/Footer";
+import NotFound from "@/pages/not-found";
+import PermohonanPage from "@/pages/PermohonanPage";
+import TrackingPage from "@/pages/TrackingPage";
 
 function HomePage() {
   return (
@@ -31,6 +35,9 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={HomePage} />
+      <Route path="/permohonan" component={PermohonanPage} />
+      <Route path="/tracking" component={TrackingPage} />
+      <Route component={NotFound} />
     </Switch>
   );
 }
@@ -39,6 +46,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <AccessibilityWidget />
         <Toaster />
         <Router />
       </TooltipProvider>

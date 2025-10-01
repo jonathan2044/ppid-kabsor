@@ -342,4 +342,27 @@
   .border.hover-elevate:not(.no-hover-interaction-elevate)::after {
     inset: -1px;
   }
+
+  /* Accessibility Widget Styles */
+  .high-contrast {
+    filter: contrast(1.5) !important;
+  }
+
+  .hide-images img {
+    display: none !important;
+  }
+
+  .pause-animations * {
+    animation-play-state: paused !important;
+    transition: none !important;
+  }
+
+  .large-cursor,
+  .large-cursor * {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><path d="M3 3 L3 27 L10 20 L13 27 L16 26 L13 19 L21 19 Z" fill="black" stroke="white" stroke-width="1"/></svg>'), auto !important;
+  }
+
+  .underline-links a {
+    text-decoration: underline !important;
+  }
 }
