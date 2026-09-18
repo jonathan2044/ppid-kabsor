@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { useLocation } from 'wouter';
+import { getExcerpt } from '@/lib/utils';
 
 interface NewsItem {
   id: number;
@@ -34,11 +35,6 @@ export function NewsSection() {
   });
 
   const news = beritaList || [];
-
-  const getExcerpt = (content: string, maxLength = 100) => {
-    if (content.length <= maxLength) return content;
-    return content.substring(0, maxLength) + '...';
-  };
 
   return (
     <section className="py-16 bg-card/30">
@@ -74,7 +70,7 @@ export function NewsSection() {
               <div className="p-6">
                 <Badge variant="secondary" className="mb-3">{item.kategori}</Badge>
                 <h3 className="text-lg font-semibold mb-2 line-clamp-2">{item.judul}</h3>
-                <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{getExcerpt(item.konten)}</p>
+                <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{getExcerpt(item.konten, 100)}</p>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <Calendar className="h-3 w-3" />
                   {(() => {

@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Search, Calendar, Eye, ArrowRight } from 'lucide-react';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
+import { getExcerpt } from '@/lib/utils';
 
 interface Berita {
   id: number;
@@ -50,11 +51,6 @@ export default function BeritaPage() {
     } catch {
       return 'Tanggal tidak valid';
     }
-  };
-
-  const getExcerpt = (content: string, maxLength = 150) => {
-    if (content.length <= maxLength) return content;
-    return content.substring(0, maxLength) + '...';
   };
 
   return (
@@ -116,7 +112,7 @@ export default function BeritaPage() {
                     </div>
                     <CardTitle className="line-clamp-2">{berita.judul}</CardTitle>
                     <CardDescription className="line-clamp-3">
-                      {getExcerpt(berita.konten)}
+                      {getExcerpt(berita.konten, 150)}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
