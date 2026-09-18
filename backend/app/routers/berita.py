@@ -41,6 +41,8 @@ def save_upload_file(upload_file: UploadFile, subfolder: str) -> str:
 async def create_berita(
     judul: str = Form(...),
     konten: str = Form(...),
+    kategori: Optional[str] = Form(None),
+    penulis: Optional[str] = Form(None),
     gambar: Optional[UploadFile] = File(None),
     current_user = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
@@ -53,7 +55,7 @@ async def create_berita(
         slug = f"{slug}-{random.randint(1000, 9999)}"
     
     gambar_path = None
-    if gambar:
+    if gambar and gambar.filename:
         gambar_path = save_upload_file(gambar, "berita")
     
     new_berita = Berita(
@@ -63,7 +65,11 @@ async def create_berita(
         gambar=gambar_path,
         views=0
     )
-    
+    if kategori:
+        new_berita.kategori = kategori
+    if penulis:
+        new_berita.penulis = penulis
+
     db.add(new_berita)
     db.commit()
     db.refresh(new_berita)
@@ -90,6 +96,37 @@ def get_berita(slug: str, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(berita)
     
+    return berita
+
+@router.put("/{berita_id}", response_model=BeritaResponse)
+async def update_berita(
+    berita_id: int,
+    judul: str = Form(...),
+    konten: str = Form(...),
+    kategori: Optional[str] = Form(None),
+    penulis: Optional[str] = Form(None),
+    gambar: Optional[UploadFile] = File(None),
+    current_user = Depends(get_current_admin_user),
+    db: Session = Depends(get_db)
+):
+    berita = db.query(Berita).filter(Berita.id == berita_id).first()
+
+    if not berita:
+        raise HTTPException(status_code=404, detail="Berita tidak ditemukan")
+
+    # Slug tidak diubah agar tautan berita yang sudah tersebar tetap valid
+    berita.judul = judul
+    berita.konten = konten
+    if kategori:
+        berita.kategori = kategori
+    if penulis:
+        berita.penulis = penulis
+    if gambar and gambar.filename:
+        berita.gambar = save_upload_file(gambar, "berita")
+
+    db.commit()
+    db.refresh(berita)
+
     return berita
 
 @router.delete("/{berita_id}")

@@ -28,7 +28,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Static file serving for uploads and client assets
+client_public_path = Path(__file__).parent.parent.parent / "client" / "public"
 client_dist_path = Path(__file__).parent.parent.parent / "client" / "dist"
+
+# Serve uploaded files
+if client_public_path.exists():
+    app.mount("/uploads", StaticFiles(directory=str(client_public_path / "uploads")), name="uploads")
+
+# Serve client assets
 if client_dist_path.exists():
     app.mount("/assets", StaticFiles(directory=str(client_dist_path / "assets")), name="assets")
 

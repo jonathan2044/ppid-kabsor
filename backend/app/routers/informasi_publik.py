@@ -82,6 +82,32 @@ def get_informasi(informasi_id: int, db: Session = Depends(get_db)):
     
     return informasi
 
+@router.put("/{informasi_id}", response_model=InformasiPublikResponse)
+async def update_informasi(
+    informasi_id: int,
+    judul: str = Form(...),
+    kategori: KategoriInformasiEnum = Form(...),
+    deskripsi: Optional[str] = Form(None),
+    file_dokumen: Optional[UploadFile] = File(None),
+    current_user = Depends(get_current_admin_user),
+    db: Session = Depends(get_db)
+):
+    informasi = db.query(InformasiPublik).filter(InformasiPublik.id == informasi_id).first()
+
+    if not informasi:
+        raise HTTPException(status_code=404, detail="Informasi tidak ditemukan")
+
+    informasi.judul = judul
+    informasi.kategori = kategori
+    informasi.deskripsi = deskripsi
+    if file_dokumen and file_dokumen.filename:
+        informasi.file_dokumen = save_upload_file(file_dokumen, "dokumen")
+
+    db.commit()
+    db.refresh(informasi)
+
+    return informasi
+
 @router.delete("/{informasi_id}")
 def delete_informasi(
     informasi_id: int,

@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  const FASTAPI_URL = process.env.FASTAPI_URL || 'http://localhost:8000';
+  const FASTAPI_URL = process.env.FASTAPI_URL || 'http://localhost:8891';
   
   app.use('/api', createProxyMiddleware({
     target: FASTAPI_URL,

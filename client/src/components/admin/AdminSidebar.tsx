@@ -22,6 +22,7 @@ import {
   Inbox,
   LogOut,
   User,
+  ExternalLink,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -122,16 +123,28 @@ export function AdminSidebar() {
             <p className="text-xs text-muted-foreground">{user?.role}</p>
           </div>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          className="w-full"
-          onClick={handleLogout}
-          data-testid="button-logout"
-        >
-          <LogOut className="h-4 w-4 mr-2" />
-          Logout
-        </Button>
+        <div className="space-y-2">
+          <Button
+            variant="secondary"
+            size="sm"
+            className="w-full"
+            onClick={() => window.open('/', '_blank')}
+            data-testid="button-view-frontend"
+          >
+            <ExternalLink className="h-4 w-4 mr-2" />
+            Lihat Website
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full"
+            onClick={handleLogout}
+            data-testid="button-logout"
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            Logout
+          </Button>
+        </div>
       </SidebarFooter>
     </Sidebar>
   );

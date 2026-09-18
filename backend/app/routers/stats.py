@@ -98,6 +98,53 @@ def get_dashboard_stats(db: Session = Depends(get_db)):
         ]
     }
 
+@router.get("/content-stats")
+def get_content_stats(db: Session = Depends(get_db)):
+    """Get content statistics for admin dashboard"""
+    
+    # Count berita
+    total_berita = db.query(func.count(models.Berita.id)).scalar() or 0
+    
+    # Count FAQ
+    total_faq = db.query(func.count(models.FAQ.id)).scalar() or 0
+    
+    # Count galeri
+    total_galeri = db.query(func.count(models.Galeri.id)).scalar() or 0
+    
+    # Count informasi publik
+    total_informasi_publik = db.query(func.count(models.InformasiPublik.id)).scalar() or 0
+    
+    # Count permohonan by status
+    total_permohonan = db.query(func.count(models.Permohonan.id)).scalar() or 0
+    
+    permohonan_menunggu = db.query(func.count(models.Permohonan.id)).filter(
+        models.Permohonan.status == models.StatusPermohonanEnum.menunggu
+    ).scalar() or 0
+    
+    permohonan_diproses = db.query(func.count(models.Permohonan.id)).filter(
+        models.Permohonan.status == models.StatusPermohonanEnum.diproses
+    ).scalar() or 0
+    
+    permohonan_selesai = db.query(func.count(models.Permohonan.id)).filter(
+        models.Permohonan.status == models.StatusPermohonanEnum.selesai
+    ).scalar() or 0
+    
+    permohonan_ditolak = db.query(func.count(models.Permohonan.id)).filter(
+        models.Permohonan.status == models.StatusPermohonanEnum.ditolak
+    ).scalar() or 0
+    
+    return {
+        'total_permohonan': total_permohonan,
+        'permohonan_menunggu': permohonan_menunggu,
+        'permohonan_diproses': permohonan_diproses,
+        'permohonan_selesai': permohonan_selesai,
+        'permohonan_ditolak': permohonan_ditolak,
+        'total_berita': total_berita,
+        'total_faq': total_faq,
+        'total_galeri': total_galeri,
+        'total_informasi_publik': total_informasi_publik
+    }
+
 @router.get("/info-categories")
 def get_info_categories_counts(db: Session = Depends(get_db)):
     """Get information categories with document counts"""

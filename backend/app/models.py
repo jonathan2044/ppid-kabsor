@@ -24,6 +24,7 @@ class KategoriInformasiEnum(str, enum.Enum):
     berkala = "berkala"
     serta_merta = "serta_merta"
     setiap_saat = "setiap_saat"
+    dikecualikan = "dikecualikan"
 
 class User(Base):
     __tablename__ = "users"

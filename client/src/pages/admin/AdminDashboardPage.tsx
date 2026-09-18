@@ -15,8 +15,18 @@ interface DashboardStats {
 }
 
 export default function AdminDashboardPage() {
-  const { data: stats } = useQuery<DashboardStats>({
-    queryKey: ['/api/stats/dashboard'],
+  const { data: stats, isLoading } = useQuery<DashboardStats>({
+    queryKey: ['admin-dashboard-stats'],
+    queryFn: async () => {
+      console.log('🔍 [Admin Dashboard] Fetching content stats...');
+      const response = await fetch('/api/stats/content-stats');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const result = await response.json();
+      console.log('✅ [Admin Dashboard] Content stats loaded:', result);
+      return result;
+    },
   });
 
   const statCards = [

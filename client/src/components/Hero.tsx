@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { PapuaPattern } from './PapuaPattern';
 import { FileText, Search } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
+import { useLocation } from 'wouter';
 
 interface HeroContent {
   title: string;
@@ -10,6 +11,7 @@ interface HeroContent {
 }
 
 export function Hero() {
+  const [, setLocation] = useLocation();
   const { data: heroContent } = useQuery<HeroContent>({
     queryKey: ['/api/pengaturan/hero'],
   });
@@ -39,7 +41,7 @@ export function Hero() {
           <Button 
             size="lg"
             className="bg-gold hover:bg-gold-light text-white border-0 min-h-12 px-8"
-            onClick={() => console.log('Navigate to Permohonan')}
+            onClick={() => setLocation('/permohonan')}
             data-testid="button-ajukan-permohonan"
           >
             <FileText className="mr-2 h-5 w-5" />
@@ -49,7 +51,7 @@ export function Hero() {
             size="lg"
             variant="outline"
             className="bg-background/10 backdrop-blur-sm border-white/30 text-white hover:bg-background/20 min-h-12 px-8"
-            onClick={() => console.log('Navigate to Tracking')}
+            onClick={() => setLocation('/tracking')}
             data-testid="button-cek-status"
           >
             <Search className="mr-2 h-5 w-5" />

@@ -1,8 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List, Dict
+import json
 from .. import models
+from ..auth import get_current_admin_user
 from ..database import get_db
+from ..schemas import HeroUpdate, KontakUpdate, ProfilUpdate
 
 router = APIRouter(prefix="/pengaturan", tags=["pengaturan"])
 
@@ -147,3 +150,53 @@ def get_footer_links(db: Session = Depends(get_db)):
             {'label': 'Privasi', 'href': '/privasi'}
         ]
     }
+
+# Field form admin -> key di tabel pengaturan (harus sama dengan key yang dibaca endpoint GET)
+HERO_KEYS = {'title': 'hero_title', 'subtitle': 'hero_subtitle', 'bg_image': 'hero_bg_image'}
+KONTAK_KEYS = {
+    'alamat': 'kontak_alamat', 'telepon': 'kontak_telepon', 'fax': 'kontak_fax',
+    'email': 'kontak_email', 'jam_senin_kamis': 'kontak_jam_senin_kamis', 'jam_jumat': 'kontak_jam_jumat'
+}
+PROFIL_KEYS = {
+    'tentang': 'profil_tentang', 'visi': 'profil_visi', 'misi': 'profil_misi',
+    'tugas_pokok': 'profil_tugas_pokok', 'fungsi': 'profil_fungsi'
+}
+
+def save_settings(db: Session, key_map: Dict[str, str], values: dict):
+    for field, key in key_map.items():
+        value = values[field]
+        if isinstance(value, list):
+            value = json.dumps(value, ensure_ascii=False)
+        setting = db.query(models.Pengaturan).filter(models.Pengaturan.key == key).first()
+        if setting:
+            setting.value = value
+        else:
+            db.add(models.Pengaturan(key=key, value=value))
+    db.commit()
+
+@router.put("/hero")
+def update_hero_content(
+    data: HeroUpdate,
+    current_user = Depends(get_current_admin_user),
+    db: Session = Depends(get_db)
+):
+    save_settings(db, HERO_KEYS, data.model_dump())
+    return get_hero_content(db)
+
+@router.put("/kontak")
+def update_kontak_info(
+    data: KontakUpdate,
+    current_user = Depends(get_current_admin_user),
+    db: Session = Depends(get_db)
+):
+    save_settings(db, KONTAK_KEYS, data.model_dump())
+    return get_kontak_info(db)
+
+@router.put("/profil")
+def update_profil_ppid(
+    data: ProfilUpdate,
+    current_user = Depends(get_current_admin_user),
+    db: Session = Depends(get_db)
+):
+    save_settings(db, PROFIL_KEYS, data.model_dump())
+    return get_profil_ppid(db)

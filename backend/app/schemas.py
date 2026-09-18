@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 from enum import Enum
 
 class RoleEnum(str, Enum):
@@ -23,6 +23,7 @@ class KategoriInformasiEnum(str, Enum):
     berkala = "berkala"
     serta_merta = "serta_merta"
     setiap_saat = "setiap_saat"
+    dikecualikan = "dikecualikan"
 
 class UserCreate(BaseModel):
     username: str
@@ -132,8 +133,10 @@ class BeritaResponse(BaseModel):
     id: int
     judul: str
     slug: str
+    kategori: Optional[str]
     konten: str
     gambar: Optional[str]
+    penulis: Optional[str]
     tanggal_publikasi: datetime
     views: int
 
@@ -157,12 +160,14 @@ class GaleriResponse(BaseModel):
 class FAQCreate(BaseModel):
     pertanyaan: str
     jawaban: str
+    kategori: str = "Umum"
     urutan: int = 0
 
 class FAQResponse(BaseModel):
     id: int
     pertanyaan: str
     jawaban: str
+    kategori: Optional[str]
     urutan: int
 
     class Config:
@@ -179,6 +184,26 @@ class PengaturanResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class HeroUpdate(BaseModel):
+    title: str
+    subtitle: str
+    bg_image: str
+
+class KontakUpdate(BaseModel):
+    alamat: str
+    telepon: str
+    fax: str
+    email: str
+    jam_senin_kamis: str
+    jam_jumat: str
+
+class ProfilUpdate(BaseModel):
+    tentang: str
+    visi: str
+    misi: List[str]
+    tugas_pokok: str
+    fungsi: List[str]
 
 class InformasiDikecualikanCreate(BaseModel):
     judul: str
