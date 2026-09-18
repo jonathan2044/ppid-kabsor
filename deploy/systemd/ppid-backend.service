@@ -1,0 +1,28 @@
+[Unit]
+Description=PPID Kabupaten Sorong - FastAPI backend
+Wants=postgresql.service
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=ppid
+Group=ppid
+# Router menyimpan unggahan ke path relatif "client/public/uploads", jadi harus dari root aplikasi
+WorkingDirectory=/var/www/ppid-kabsor
+EnvironmentFile=/etc/ppid-kabsor/backend.env
+Environment=PYTHONPATH=/var/www/ppid-kabsor/backend
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/var/www/ppid-kabsor/venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8891 --workers 2 --proxy-headers --forwarded-allow-ips 127.0.0.1 --no-server-header
+Restart=always
+RestartSec=3
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/www/ppid-kabsor/client/public/uploads
+UMask=0022
+
+[Install]
+WantedBy=multi-user.target
