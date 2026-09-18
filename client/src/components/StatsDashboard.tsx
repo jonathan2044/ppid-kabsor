@@ -26,7 +26,14 @@ const colorBgMap: Record<string, string> = {
 
 export function StatsDashboard() {
   const { data: statsData, isLoading } = useQuery<{ stats: Stat[] }>({
-    queryKey: ['/api/stats/dashboard'],
+    queryKey: ['stats-dashboard'],
+    queryFn: async () => {
+      const response = await fetch('/api/stats/dashboard');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    },
   });
 
   const stats = statsData?.stats || [];

@@ -17,6 +17,7 @@ def create_faq(
     new_faq = FAQ(
         pertanyaan=faq.pertanyaan,
         jawaban=faq.jawaban,
+        kategori=faq.kategori,
         urutan=faq.urutan
     )
     
@@ -45,6 +46,7 @@ def update_faq(
     
     db_faq.pertanyaan = faq.pertanyaan
     db_faq.jawaban = faq.jawaban
+    db_faq.kategori = faq.kategori
     db_faq.urutan = faq.urutan
     
     db.commit()

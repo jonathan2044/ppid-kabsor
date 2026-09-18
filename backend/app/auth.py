@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
 from passlib.context import CryptContext
+import hashlib
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
@@ -17,10 +18,27 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer()
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+    try:
+        return pwd_context.verify(plain_password, hashed_password)
+    except:
+        # Fallback untuk SHA256 hashing
+        return get_sha256_hash(plain_password) == hashed_password
 
 def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
+    try:
+        # Truncate password to 72 bytes for bcrypt compatibility
+        password_bytes = password.encode('utf-8')
+        if len(password_bytes) > 72:
+            password_bytes = password_bytes[:72]
+        password = password_bytes.decode('utf-8', errors='ignore')
+        return pwd_context.hash(password)
+    except:
+        # Fallback ke SHA256 jika bcrypt bermasalah
+        return get_sha256_hash(password)
+
+def get_sha256_hash(password: str) -> str:
+    """Fallback password hashing menggunakan SHA256"""
+    return hashlib.sha256((password + "ppid_salt_2024").encode()).hexdigest()
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()

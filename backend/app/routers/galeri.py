@@ -69,6 +69,30 @@ def get_galeri(galeri_id: int, db: Session = Depends(get_db)):
     
     return galeri
 
+@router.put("/{galeri_id}", response_model=GaleriResponse)
+async def update_galeri(
+    galeri_id: int,
+    judul: str = Form(...),
+    deskripsi: Optional[str] = Form(None),
+    file_gambar: Optional[UploadFile] = File(None),
+    current_user = Depends(get_current_admin_user),
+    db: Session = Depends(get_db)
+):
+    galeri = db.query(Galeri).filter(Galeri.id == galeri_id).first()
+
+    if not galeri:
+        raise HTTPException(status_code=404, detail="Galeri tidak ditemukan")
+
+    galeri.judul = judul
+    galeri.deskripsi = deskripsi
+    if file_gambar and file_gambar.filename:
+        galeri.file_gambar = save_upload_file(file_gambar, "galeri")
+
+    db.commit()
+    db.refresh(galeri)
+
+    return galeri
+
 @router.delete("/{galeri_id}")
 def delete_galeri(
     galeri_id: int,

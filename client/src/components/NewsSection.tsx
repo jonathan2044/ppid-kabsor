@@ -5,21 +5,31 @@ import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
+import { useLocation } from 'wouter';
 
-interface Berita {
+interface NewsItem {
   id: number;
   judul: string;
+  slug: string;
   kategori: string;
   konten: string;
   gambar: string;
-  gambar_url: string;
-  tanggal_publish: string;
+  tanggal_publikasi: string;
+  penulis: string;
   views: number;
 }
 
 export function NewsSection() {
-  const { data: beritaList } = useQuery<Berita[]>({
-    queryKey: ['/api/berita/list'],
+  const [, setLocation] = useLocation();
+  const { data: beritaList } = useQuery<NewsItem[]>({
+    queryKey: ['berita-list'],
+    queryFn: async () => {
+      const response = await fetch('/api/berita/list');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    },
     select: (data) => data.slice(0, 3),
   });
 
@@ -38,7 +48,7 @@ export function NewsSection() {
             <h2 className="text-3xl font-bold mb-2 font-serif">Berita & Pengumuman</h2>
             <p className="text-muted-foreground">Informasi terkini seputar PPID Kabupaten Sorong</p>
           </div>
-          <Button variant="outline" onClick={() => window.location.href = '/berita'} data-testid="button-lihat-semua">
+          <Button variant="outline" onClick={() => setLocation('/berita')} data-testid="button-lihat-semua">
             Lihat Semua
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
@@ -52,10 +62,10 @@ export function NewsSection() {
               onClick={() => window.location.href = `/berita/${item.id}`}
               data-testid={`news-${item.id}`}
             >
-              {item.gambar_url && (
+              {item.gambar && (
                 <div className="aspect-video overflow-hidden">
                   <img
-                    src={item.gambar_url}
+                    src={item.gambar}
                     alt={item.judul}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
@@ -67,7 +77,13 @@ export function NewsSection() {
                 <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{getExcerpt(item.konten)}</p>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <Calendar className="h-3 w-3" />
-                  {format(new Date(item.tanggal_publish), 'dd MMMM yyyy', { locale: id })}
+                  {(() => {
+                    try {
+                      return format(new Date(item.tanggal_publikasi), 'dd MMMM yyyy', { locale: id });
+                    } catch {
+                      return 'Tanggal tidak valid';
+                    }
+                  })()}
                 </div>
               </div>
             </Card>

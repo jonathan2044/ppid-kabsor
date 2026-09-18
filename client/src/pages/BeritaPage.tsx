@@ -14,8 +14,8 @@ interface Berita {
   judul: string;
   kategori: string;
   konten: string;
-  gambar_url?: string;
-  tanggal_publish: string;
+  gambar?: string;
+  tanggal_publikasi: string;
   views: number;
   penulis: string;
 }
@@ -24,7 +24,14 @@ export default function BeritaPage() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const { data: beritaList, isLoading } = useQuery<Berita[]>({
-    queryKey: ['/api/berita'],
+    queryKey: ['berita'],
+    queryFn: async () => {
+      const response = await fetch('/api/berita/list');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    },
     enabled: true,
   });
 
@@ -32,6 +39,18 @@ export default function BeritaPage() {
     item.judul.toLowerCase().includes(searchQuery.toLowerCase()) ||
     item.konten.toLowerCase().includes(searchQuery.toLowerCase())
   ) || [];
+
+  const formatSafeDate = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return 'Tanggal tidak valid';
+      }
+      return format(date, 'dd MMM yyyy', { locale: id });
+    } catch {
+      return 'Tanggal tidak valid';
+    }
+  };
 
   const getExcerpt = (content: string, maxLength = 150) => {
     if (content.length <= maxLength) return content;
@@ -79,10 +98,10 @@ export default function BeritaPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredData.map((berita) => (
                 <Card key={berita.id} className="hover-elevate overflow-hidden" data-testid={`card-berita-${berita.id}`}>
-                  {berita.gambar_url && (
+                  {berita.gambar && (
                     <div className="aspect-video w-full overflow-hidden bg-muted">
                       <img
-                        src={berita.gambar_url}
+                        src={berita.gambar}
                         alt={berita.judul}
                         className="w-full h-full object-cover"
                         data-testid={`img-berita-${berita.id}`}
@@ -104,7 +123,7 @@ export default function BeritaPage() {
                     <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
                       <div className="flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
-                        <span>{format(new Date(berita.tanggal_publish), 'dd MMM yyyy', { locale: id })}</span>
+                        <span>{formatSafeDate(berita.tanggal_publikasi)}</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <Eye className="h-4 w-4" />

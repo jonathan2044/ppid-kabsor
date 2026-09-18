@@ -2,6 +2,7 @@ import { Card } from '@/components/ui/card';
 import { Calendar, AlertCircle, Clock, ShieldAlert, FileCheck } from 'lucide-react';
 import { PapuaBorder } from './PapuaPattern';
 import { useQuery } from '@tanstack/react-query';
+import { useLocation } from 'wouter';
 
 interface Category {
   icon: string;
@@ -20,6 +21,7 @@ const iconMap: Record<string, any> = {
 };
 
 export function InfoCategories() {
+  const [, setLocation] = useLocation();
   const { data: categoriesData, isLoading } = useQuery<{ categories: Category[] }>({
     queryKey: ['/api/stats/info-categories'],
   });
@@ -44,7 +46,7 @@ export function InfoCategories() {
                 <Card
                   key={index}
                   className="p-6 hover-elevate active-elevate-2 cursor-pointer transition-all duration-200 overflow-visible group"
-                  onClick={() => window.location.href = category.href}
+                  onClick={() => setLocation(category.href)}
                   data-testid={`category-${category.title.toLowerCase().replace(/\s+/g, '-')}`}
                 >
                   <PapuaBorder className="mb-4" />
