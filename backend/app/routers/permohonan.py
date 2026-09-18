@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 import os
 import shutil
 from pathlib import Path
@@ -56,8 +56,9 @@ async def submit_permohonan(
     
     ktp_path = save_upload_file(file_ktp, "ktp")
     
+    # Browser mengirim bagian file kosong (tanpa nama) bila input file tidak diisi
     pendukung_path = None
-    if file_pendukung:
+    if file_pendukung and file_pendukung.filename:
         pendukung_path = save_upload_file(file_pendukung, "dokumen")
     
     new_permohonan = Permohonan(
@@ -109,31 +110,32 @@ def list_permohonan(
     permohonan_list = query.order_by(Permohonan.tanggal_permohonan.desc()).offset(skip).limit(limit).all()
     return permohonan_list
 
-@router.put("/{permohonan_id}/update-status")
+@router.put("/{permohonan_id}/update-status", response_model=PermohonanResponse)
 def update_permohonan_status(
     permohonan_id: int,
-    status: StatusPermohonanEnum,
-    catatan_admin: Optional[str] = None,
+    status: StatusPermohonanEnum = Form(...),
+    catatan_admin: Optional[str] = Form(None),
     file_jawaban: Optional[UploadFile] = File(None),
     current_user = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     permohonan = db.query(Permohonan).filter(Permohonan.id == permohonan_id).first()
-    
+
     if not permohonan:
         raise HTTPException(status_code=404, detail="Permohonan tidak ditemukan")
-    
+
+    # Tanggal hanya dicatat saat status berubah, bukan setiap kali catatan disimpan
+    if status != permohonan.status:
+        if status == StatusPermohonanEnum.diproses:
+            permohonan.tanggal_diproses = datetime.now(timezone.utc)
+        elif status in [StatusPermohonanEnum.selesai, StatusPermohonanEnum.ditolak]:
+            permohonan.tanggal_selesai = datetime.now(timezone.utc)
     permohonan.status = status
-    
-    if status == StatusPermohonanEnum.diproses:
-        permohonan.tanggal_diproses = datetime.now()
-    elif status in [StatusPermohonanEnum.selesai, StatusPermohonanEnum.ditolak]:
-        permohonan.tanggal_selesai = datetime.now()
-    
-    if catatan_admin:
-        permohonan.catatan_admin = catatan_admin
-    
-    if file_jawaban:
+
+    if catatan_admin is not None:
+        permohonan.catatan_admin = catatan_admin.strip() or None
+
+    if file_jawaban and file_jawaban.filename:
         jawaban_path = save_upload_file(file_jawaban, "jawaban")
         permohonan.file_jawaban = jawaban_path
     
