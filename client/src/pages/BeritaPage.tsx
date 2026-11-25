@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { Link } from 'wouter';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,6 +14,7 @@ import { getExcerpt } from '@/lib/utils';
 interface Berita {
   id: number;
   judul: string;
+  slug: string;
   kategori: string;
   konten: string;
   gambar?: string;
@@ -126,14 +128,14 @@ export default function BeritaPage() {
                         <span>{berita.views}</span>
                       </div>
                     </div>
-                    <a
-                      href={`/berita/${berita.id}`}
+                    <Link
+                      href={`/berita/${berita.slug}`}
                       className="text-primary hover:underline flex items-center gap-1 text-sm font-medium"
                       data-testid={`link-detail-${berita.id}`}
                     >
                       Baca Selengkapnya
                       <ArrowRight className="h-4 w-4" />
-                    </a>
+                    </Link>
                   </CardContent>
                 </Card>
               ))}
