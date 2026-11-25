@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
@@ -12,9 +12,18 @@ export default function AdminLoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const [, navigate] = useLocation();
   const { toast } = useToast();
+
+  // Pindah ke dashboard hanya setelah data pengguna benar-benar masuk, bukan
+  // segera setelah permintaan login selesai. Ini juga melewati halaman login
+  // bila pengunjung sudah punya sesi aktif.
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/admin');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,7 +45,6 @@ export default function AdminLoginPage() {
         title: 'Login Berhasil',
         description: 'Selamat datang di panel admin',
       });
-      navigate('/admin');
     } catch (error) {
       toast({
         title: 'Login Gagal',

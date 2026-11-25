@@ -11,16 +11,19 @@ interface AdminLayoutProps {
 }
 
 export function AdminLayout({ children, requireAdmin = false }: AdminLayoutProps) {
-  const { isAuthenticated, isLoading, user } = useAuth();
+  const { isAuthenticated, isLoading, user, token } = useAuth();
   const [, navigate] = useLocation();
 
+  // Token sudah ada tapi data pengguna belum: sesi masih disiapkan, bukan belum login
+  const sesiBelumSiap = isLoading || (!!token && !user);
+
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (!sesiBelumSiap && !isAuthenticated) {
       navigate('/admin/login');
     }
-  }, [isAuthenticated, isLoading, navigate]);
+  }, [isAuthenticated, sesiBelumSiap, navigate]);
 
-  if (isLoading) {
+  if (sesiBelumSiap) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent" />

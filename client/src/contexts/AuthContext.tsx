@@ -59,25 +59,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const login = async (username: string, password: string) => {
-    const response = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
-    });
+    // Tandai sesi sedang disiapkan: antara token tersimpan dan data pengguna
+    // selesai diambil, isAuthenticated masih false. Tanpa penanda ini AdminLayout
+    // mengira pengunjung belum login dan melemparnya balik ke halaman login.
+    setIsLoading(true);
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.detail || 'Login failed');
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || 'Login failed');
+      }
+
+      const data = await response.json();
+      const accessToken = data.access_token;
+
+      localStorage.setItem('admin_token', accessToken);
+      setToken(accessToken);
+      // fetchUserInfo melepas penanda ini sendiri di blok finally-nya
+      await fetchUserInfo(accessToken);
+    } catch (error) {
+      // Termasuk jaringan putus: penanda harus dilepas, kalau tidak panel admin
+      // akan menampilkan pemuat selamanya
+      setIsLoading(false);
+      throw error;
     }
-
-    const data = await response.json();
-    const accessToken = data.access_token;
-    
-    localStorage.setItem('admin_token', accessToken);
-    setToken(accessToken);
-    await fetchUserInfo(accessToken);
   };
 
   const logout = () => {
