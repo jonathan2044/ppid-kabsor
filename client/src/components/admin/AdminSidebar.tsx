@@ -22,12 +22,21 @@ import {
   Inbox,
   LogOut,
   User,
+  Users,
   ExternalLink,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
-const menuItems = [
+type MenuItem = {
+  title: string;
+  url: string;
+  icon: typeof LayoutDashboard;
+  /** Hanya tampil untuk admin; operator tidak punya akses ke halaman ini. */
+  adminOnly?: boolean;
+};
+
+const menuItems: MenuItem[] = [
   {
     title: 'Dashboard',
     url: '/admin',
@@ -37,6 +46,7 @@ const menuItems = [
     title: 'Pengaturan Website',
     url: '/admin/pengaturan',
     icon: Settings,
+    adminOnly: true,
   },
   {
     title: 'Berita',
@@ -63,11 +73,24 @@ const menuItems = [
     url: '/admin/permohonan',
     icon: Inbox,
   },
+  {
+    title: 'Kelola Pengguna',
+    url: '/admin/pengguna',
+    icon: Users,
+  },
 ];
 
 export function AdminSidebar() {
   const [location] = useLocation();
   const { user, logout } = useAuth();
+
+  const isAdmin = user?.role === 'admin';
+  // Operator hanya melihat menu konten; halaman pengguna jadi "Akun Saya" (ganti password)
+  const visibleItems = menuItems
+    .filter((item) => isAdmin || !item.adminOnly)
+    .map((item) =>
+      item.url === '/admin/pengguna' && !isAdmin ? { ...item, title: 'Akun Saya' } : item,
+    );
 
   const handleLogout = () => {
     logout();
@@ -93,7 +116,7 @@ export function AdminSidebar() {
           <SidebarGroupLabel>Menu Utama</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => {
+              {visibleItems.map((item) => {
                 const isActive = location === item.url;
                 return (
                   <SidebarMenuItem key={item.title}>

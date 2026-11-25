@@ -7,12 +7,13 @@ import os
 print(f"[FastAPI] Starting PPID Kabupaten Sorong API...")
 print(f"[FastAPI] DATABASE_URL is {'set' if os.getenv('DATABASE_URL') else 'NOT SET'}")
 
-from .database import engine, Base
+from .database import engine, Base, ensure_schema_updates
 from .routers import auth, permohonan, informasi_publik, berita, galeri, faq, pengaturan, stats
 
 print(f"[FastAPI] Creating database tables...")
 try:
     Base.metadata.create_all(bind=engine)
+    ensure_schema_updates()
     print(f"[FastAPI] Database tables created successfully!")
 except Exception as e:
     print(f"[FastAPI] Error creating database tables: {e}")

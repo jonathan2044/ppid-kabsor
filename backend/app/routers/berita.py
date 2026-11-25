@@ -8,7 +8,7 @@ import re
 from ..database import get_db
 from ..models import Berita
 from ..schemas import BeritaResponse
-from ..auth import get_current_admin_user
+from ..auth import get_current_content_user
 
 router = APIRouter(prefix="/berita", tags=["berita"])
 
@@ -44,7 +44,7 @@ async def create_berita(
     kategori: Optional[str] = Form(None),
     penulis: Optional[str] = Form(None),
     gambar: Optional[UploadFile] = File(None),
-    current_user = Depends(get_current_admin_user),
+    current_user = Depends(get_current_content_user),
     db: Session = Depends(get_db)
 ):
     slug = generate_slug(judul)
@@ -106,7 +106,7 @@ async def update_berita(
     kategori: Optional[str] = Form(None),
     penulis: Optional[str] = Form(None),
     gambar: Optional[UploadFile] = File(None),
-    current_user = Depends(get_current_admin_user),
+    current_user = Depends(get_current_content_user),
     db: Session = Depends(get_db)
 ):
     berita = db.query(Berita).filter(Berita.id == berita_id).first()
@@ -132,7 +132,7 @@ async def update_berita(
 @router.delete("/{berita_id}")
 def delete_berita(
     berita_id: int,
-    current_user = Depends(get_current_admin_user),
+    current_user = Depends(get_current_content_user),
     db: Session = Depends(get_db)
 ):
     berita = db.query(Berita).filter(Berita.id == berita_id).first()

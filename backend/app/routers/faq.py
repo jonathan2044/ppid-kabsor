@@ -4,14 +4,14 @@ from typing import List
 from ..database import get_db
 from ..models import FAQ
 from ..schemas import FAQCreate, FAQResponse
-from ..auth import get_current_admin_user
+from ..auth import get_current_content_user
 
 router = APIRouter(prefix="/faq", tags=["faq"])
 
 @router.post("/create", response_model=FAQResponse)
 def create_faq(
     faq: FAQCreate,
-    current_user = Depends(get_current_admin_user),
+    current_user = Depends(get_current_content_user),
     db: Session = Depends(get_db)
 ):
     new_faq = FAQ(
@@ -36,7 +36,7 @@ def list_faq(db: Session = Depends(get_db)):
 def update_faq(
     faq_id: int,
     faq: FAQCreate,
-    current_user = Depends(get_current_admin_user),
+    current_user = Depends(get_current_content_user),
     db: Session = Depends(get_db)
 ):
     db_faq = db.query(FAQ).filter(FAQ.id == faq_id).first()
@@ -57,7 +57,7 @@ def update_faq(
 @router.delete("/{faq_id}")
 def delete_faq(
     faq_id: int,
-    current_user = Depends(get_current_admin_user),
+    current_user = Depends(get_current_content_user),
     db: Session = Depends(get_db)
 ):
     faq = db.query(FAQ).filter(FAQ.id == faq_id).first()

@@ -7,7 +7,7 @@ import shutil
 from ..database import get_db
 from ..models import InformasiPublik, KategoriInformasiEnum
 from ..schemas import InformasiPublikResponse
-from ..auth import get_current_admin_user
+from ..auth import get_current_content_user
 
 router = APIRouter(prefix="/informasi-publik", tags=["informasi_publik"])
 
@@ -35,7 +35,7 @@ async def upload_informasi(
     kategori: KategoriInformasiEnum = Form(...),
     deskripsi: Optional[str] = Form(None),
     file_dokumen: UploadFile = File(...),
-    current_user = Depends(get_current_admin_user),
+    current_user = Depends(get_current_content_user),
     db: Session = Depends(get_db)
 ):
     dokumen_path = save_upload_file(file_dokumen, "dokumen")
@@ -89,7 +89,7 @@ async def update_informasi(
     kategori: KategoriInformasiEnum = Form(...),
     deskripsi: Optional[str] = Form(None),
     file_dokumen: Optional[UploadFile] = File(None),
-    current_user = Depends(get_current_admin_user),
+    current_user = Depends(get_current_content_user),
     db: Session = Depends(get_db)
 ):
     informasi = db.query(InformasiPublik).filter(InformasiPublik.id == informasi_id).first()
@@ -111,7 +111,7 @@ async def update_informasi(
 @router.delete("/{informasi_id}")
 def delete_informasi(
     informasi_id: int,
-    current_user = Depends(get_current_admin_user),
+    current_user = Depends(get_current_content_user),
     db: Session = Depends(get_db)
 ):
     informasi = db.query(InformasiPublik).filter(InformasiPublik.id == informasi_id).first()
