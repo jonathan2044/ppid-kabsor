@@ -40,6 +40,10 @@ export default {
           DEFAULT: "hsl(var(--primary) / <alpha-value>)",
           foreground: "hsl(var(--primary-foreground) / <alpha-value>)",
           border: "var(--primary-border)",
+          // Gradasi navy lambang Kabupaten Sorong, untuk lapisan gelap di atas foto
+          700: "hsl(230 58% 38%)",
+          800: "hsl(230 60% 28%)",
+          900: "hsl(230 62% 20%)",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary) / <alpha-value>)",

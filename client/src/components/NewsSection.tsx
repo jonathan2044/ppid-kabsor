@@ -55,7 +55,7 @@ export function NewsSection() {
             <Card
               key={item.id}
               className="overflow-hidden hover-elevate active-elevate-2 cursor-pointer transition-all duration-200 group"
-              onClick={() => window.location.href = `/berita/${item.id}`}
+              onClick={() => setLocation(`/berita/${item.slug}`)}
               data-testid={`news-${item.id}`}
             >
               {item.gambar && (

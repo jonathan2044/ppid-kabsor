@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
@@ -13,6 +12,9 @@ import { Plus, Pencil, Trash2, Eye, Search, Upload } from 'lucide-react';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { adminFetch } from '@/lib/adminFetch';
+const RichTextEditor = lazy(() =>
+  import('@/components/admin/RichTextEditor').then((m) => ({ default: m.RichTextEditor })),
+);
 
 interface Berita {
   id: number;
@@ -254,13 +256,14 @@ export default function AdminBeritaPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="konten">Konten Berita *</Label>
-                <Textarea
-                  id="konten"
-                  placeholder="Tulis konten berita..."
-                  rows={8}
-                  value={formData.konten}
-                  onChange={(e) => handleFormChange('konten', e.target.value)}
-                />
+                <Suspense fallback={<div className="min-h-[288px] rounded-md border bg-muted/30" />}>
+                  <RichTextEditor
+                    id="konten"
+                    placeholder="Tulis konten berita..."
+                    value={formData.konten}
+                    onChange={(html) => handleFormChange('konten', html)}
+                  />
+                </Suspense>
               </div>
 
               <div className="space-y-2">

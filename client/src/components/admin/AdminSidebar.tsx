@@ -83,7 +83,7 @@ export function AdminSidebar() {
           </div>
           <div className="flex flex-col">
             <span className="font-semibold text-sm">PPID Admin</span>
-            <span className="text-xs text-muted-foreground">Panel CMS</span>
+            <span className="text-xs text-sidebar-foreground/70">Panel CMS</span>
           </div>
         </div>
       </SidebarHeader>
@@ -120,7 +120,7 @@ export function AdminSidebar() {
           </Avatar>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium truncate">{user?.nama_lengkap}</p>
-            <p className="text-xs text-muted-foreground">{user?.role}</p>
+            <p className="text-xs text-sidebar-foreground/70">{user?.role}</p>
           </div>
         </div>
         <div className="space-y-2">

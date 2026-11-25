@@ -26,21 +26,21 @@
 
   --card-border: 220 8% 92%;
 
-  --sidebar: 0 0% 96%;
+  --sidebar: 230 55% 18%;
 
-  --sidebar-foreground: 213 20% 15%;
+  --sidebar-foreground: 220 30% 92%;
 
-  --sidebar-border: 220 8% 88%;
+  --sidebar-border: 230 40% 28%;
 
-  --sidebar-primary: 214 88% 51%;
+  --sidebar-primary: 38 92% 50%;
 
-  --sidebar-primary-foreground: 0 0% 98%;
+  --sidebar-primary-foreground: 230 62% 16%;
 
-  --sidebar-accent: 217 15% 88%;
+  --sidebar-accent: 230 42% 26%;
 
-  --sidebar-accent-foreground: 213 20% 25%;
+  --sidebar-accent-foreground: 0 0% 98%;
 
-  --sidebar-ring: 214 88% 51%;
+  --sidebar-ring: 38 92% 50%;
 
   --popover: 0 0% 94%;
 
@@ -48,7 +48,7 @@
 
   --popover-border: 220 8% 86%;
 
-  --primary: 214 88% 51%;
+  --primary: 230 60% 31%;
 
   --primary-foreground: 0 0% 98%;
 
@@ -69,9 +69,9 @@
   --destructive-foreground: 0 0% 98%;
 
   --input: 213 15% 75%;
-  --ring: 214 88% 51%;
-  --chart-1: 214 88% 45%;
-  --chart-2: 38 92% 48%;
+  --ring: 230 60% 31%;
+  --chart-1: 230 60% 35%;
+  --chart-2: 38 92% 45%;
   --chart-3: 14 65% 42%;
   --chart-4: 32 88% 50%;
   --chart-5: 25 35% 28%;
@@ -365,4 +365,12 @@
   .underline-links a {
     text-decoration: underline !important;
   }
+}
+/* Teks bantuan di editor berita saat masih kosong (ekstensi Placeholder TipTap) */
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: hsl(var(--muted-foreground));
+  float: left;
+  height: 0;
+  pointer-events: none;
 }
