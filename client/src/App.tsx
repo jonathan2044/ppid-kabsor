@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -30,6 +30,7 @@ import AdminFAQPage from "@/pages/admin/AdminFAQPage";
 import AdminGaleriPage from "@/pages/admin/AdminGaleriPage";
 import AdminInformasiPublikPage from "@/pages/admin/AdminInformasiPublikPage";
 import AdminPermohonanPage from "@/pages/admin/AdminPermohonanPage";
+import AdminPenggunaPage from "@/pages/admin/AdminPenggunaPage";
 
 function HomePage() {
   return (
@@ -70,7 +71,7 @@ function Router() {
       </Route>
       <Route path="/admin/pengaturan">
         {() => (
-          <AdminLayout>
+          <AdminLayout requireAdmin>
             <AdminPengaturanPage />
           </AdminLayout>
         )}
@@ -110,10 +111,25 @@ function Router() {
           </AdminLayout>
         )}
       </Route>
+      <Route path="/admin/pengguna">
+        {() => (
+          <AdminLayout>
+            <AdminPenggunaPage />
+          </AdminLayout>
+        )}
+      </Route>
       
       <Route component={NotFound} />
     </Switch>
   );
+}
+
+/** Tombol aksesibilitas hanya untuk halaman publik: di panel admin posisinya
+ *  menutupi tombol-tombol di kaki sidebar. */
+function AksesibilitasPublik() {
+  const [location] = useLocation();
+  if (location.startsWith('/admin')) return null;
+  return <AccessibilityWidget />;
 }
 
 function App() {
@@ -121,7 +137,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <TooltipProvider>
-          <AccessibilityWidget />
+          <AksesibilitasPublik />
           <Toaster />
           <Router />
         </TooltipProvider>

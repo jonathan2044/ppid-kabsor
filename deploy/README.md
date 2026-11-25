@@ -60,7 +60,7 @@ Origin sengaja tidak me-redirect HTTP ke HTTPS (sudah dilakukan Cloudflare) agar
 
 ## Catatan keamanan
 
-- `POST /api/auth/register` diblokir di Nginx: endpoint ini tidak butuh login dan menerima `role: "admin"`.
+- `POST /api/auth/register` sudah dihapus dari aplikasi; akun baru dibuat lewat `POST /api/auth/users` yang butuh login admin. Blok 404 di Nginx dipertahankan sebagai lapis pengaman kedua.
 - `/api/docs`, `/api/redoc`, `/api/openapi.json` diblokir di produksi.
 - File di `/uploads/` selain gambar/PDF dikirim sebagai `application/octet-stream` (dipaksa unduh) untuk
   mencegah XSS lewat file unggahan.

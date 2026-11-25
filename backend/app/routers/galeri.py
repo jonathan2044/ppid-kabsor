@@ -7,7 +7,7 @@ import shutil
 from ..database import get_db
 from ..models import Galeri
 from ..schemas import GaleriResponse
-from ..auth import get_current_admin_user
+from ..auth import get_current_content_user
 
 router = APIRouter(prefix="/galeri", tags=["galeri"])
 
@@ -34,7 +34,7 @@ async def upload_galeri(
     judul: str = Form(...),
     deskripsi: Optional[str] = Form(None),
     file_gambar: UploadFile = File(...),
-    current_user = Depends(get_current_admin_user),
+    current_user = Depends(get_current_content_user),
     db: Session = Depends(get_db)
 ):
     gambar_path = save_upload_file(file_gambar, "galeri")
@@ -75,7 +75,7 @@ async def update_galeri(
     judul: str = Form(...),
     deskripsi: Optional[str] = Form(None),
     file_gambar: Optional[UploadFile] = File(None),
-    current_user = Depends(get_current_admin_user),
+    current_user = Depends(get_current_content_user),
     db: Session = Depends(get_db)
 ):
     galeri = db.query(Galeri).filter(Galeri.id == galeri_id).first()
@@ -96,7 +96,7 @@ async def update_galeri(
 @router.delete("/{galeri_id}")
 def delete_galeri(
     galeri_id: int,
-    current_user = Depends(get_current_admin_user),
+    current_user = Depends(get_current_content_user),
     db: Session = Depends(get_db)
 ):
     galeri = db.query(Galeri).filter(Galeri.id == galeri_id).first()

@@ -8,7 +8,7 @@ from pathlib import Path
 from ..database import get_db
 from ..models import Permohonan, StatusPermohonanEnum
 from ..schemas import PermohonanResponse
-from ..auth import get_current_admin_user
+from ..auth import get_current_content_user
 
 router = APIRouter(prefix="/permohonan", tags=["permohonan"])
 
@@ -99,7 +99,7 @@ def list_permohonan(
     skip: int = 0,
     limit: int = 50,
     status: Optional[str] = None,
-    current_user = Depends(get_current_admin_user),
+    current_user = Depends(get_current_content_user),
     db: Session = Depends(get_db)
 ):
     query = db.query(Permohonan)
@@ -116,7 +116,7 @@ def update_permohonan_status(
     status: StatusPermohonanEnum = Form(...),
     catatan_admin: Optional[str] = Form(None),
     file_jawaban: Optional[UploadFile] = File(None),
-    current_user = Depends(get_current_admin_user),
+    current_user = Depends(get_current_content_user),
     db: Session = Depends(get_db)
 ):
     permohonan = db.query(Permohonan).filter(Permohonan.id == permohonan_id).first()

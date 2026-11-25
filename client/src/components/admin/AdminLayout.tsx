@@ -6,10 +6,12 @@ import { AdminSidebar } from './AdminSidebar';
 
 interface AdminLayoutProps {
   children: ReactNode;
+  /** Halaman yang hanya boleh dibuka admin, bukan operator. */
+  requireAdmin?: boolean;
 }
 
-export function AdminLayout({ children }: AdminLayoutProps) {
-  const { isAuthenticated, isLoading } = useAuth();
+export function AdminLayout({ children, requireAdmin = false }: AdminLayoutProps) {
+  const { isAuthenticated, isLoading, user } = useAuth();
   const [, navigate] = useLocation();
 
   useEffect(() => {
@@ -30,6 +32,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     return null;
   }
 
+  const ditolak = requireAdmin && user?.role !== 'admin';
+
   const style = {
     '--sidebar-width': '16rem',
     '--sidebar-width-icon': '3rem',
@@ -47,7 +51,17 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             </div>
           </header>
           <main className="flex-1 overflow-y-auto p-6">
-            {children}
+            {ditolak ? (
+              <div className="mx-auto max-w-lg rounded-lg border bg-card p-8 text-center">
+                <h1 className="text-xl font-bold">Halaman ini khusus admin</h1>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Akun Anda terdaftar sebagai operator, yang dapat mengelola berita, FAQ, galeri,
+                  informasi publik, dan permohonan. Hubungi admin bila Anda perlu akses ke halaman ini.
+                </p>
+              </div>
+            ) : (
+              children
+            )}
           </main>
         </div>
       </div>
