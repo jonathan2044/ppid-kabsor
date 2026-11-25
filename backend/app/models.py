@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, Enum, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, Text, DateTime, Enum, ForeignKey, Boolean, text
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from .database import Base
@@ -35,6 +35,7 @@ class User(Base):
     password = Column(String(255), nullable=False)
     nama_lengkap = Column(String(255), nullable=False)
     role = Column(Enum(RoleEnum), nullable=False, default=RoleEnum.operator)
+    is_active = Column(Boolean, nullable=False, server_default=text("true"), default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 class Permohonan(Base):

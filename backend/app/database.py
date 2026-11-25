@@ -50,3 +50,19 @@ def test_db_connection():
     except Exception as e:
         print(f"Database connection error: {e}")
         return False
+
+
+def ensure_schema_updates():
+    """Penyesuaian skema yang tidak bisa dilakukan Base.metadata.create_all().
+
+    create_all() hanya membuat tabel baru, tidak menambah kolom ke tabel yang
+    sudah ada. Proyek ini belum memakai Alembic, jadi perubahan kolom dijalankan
+    di sini secara idempotent (aman dijalankan berulang kali).
+    """
+    from sqlalchemy import text
+    statements = [
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS is_active BOOLEAN NOT NULL DEFAULT TRUE",
+    ]
+    with engine.begin() as conn:
+        for statement in statements:
+            conn.execute(text(statement))

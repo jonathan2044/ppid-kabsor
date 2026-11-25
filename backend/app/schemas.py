@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
 from typing import List, Optional
 from enum import Enum
@@ -25,16 +25,36 @@ class KategoriInformasiEnum(str, Enum):
     setiap_saat = "setiap_saat"
     dikecualikan = "dikecualikan"
 
+USERNAME_POLA = r"^[a-z0-9._-]{3,50}$"
+PASSWORD_MIN = 10
+
+
 class UserCreate(BaseModel):
-    username: str
+    username: str = Field(pattern=USERNAME_POLA)
     email: EmailStr
-    password: str
-    nama_lengkap: str
+    password: str = Field(min_length=PASSWORD_MIN, max_length=128)
+    nama_lengkap: str = Field(min_length=3, max_length=255)
     role: RoleEnum = RoleEnum.operator
+
+class UserUpdate(BaseModel):
+    """Perubahan data pengguna oleh admin. Field yang tidak dikirim tidak diubah."""
+    email: Optional[EmailStr] = None
+    nama_lengkap: Optional[str] = Field(default=None, min_length=3, max_length=255)
+    role: Optional[RoleEnum] = None
+    is_active: Optional[bool] = None
 
 class UserLogin(BaseModel):
     username: str
     password: str
+
+class PasswordChange(BaseModel):
+    """Ganti password sendiri; password lama wajib untuk mencegah penyalahgunaan sesi."""
+    password_lama: str
+    password_baru: str = Field(min_length=PASSWORD_MIN, max_length=128)
+
+class PasswordReset(BaseModel):
+    """Admin menyetel ulang password pengguna lain."""
+    password_baru: str = Field(min_length=PASSWORD_MIN, max_length=128)
 
 class UserResponse(BaseModel):
     id: int
@@ -42,6 +62,7 @@ class UserResponse(BaseModel):
     email: str
     nama_lengkap: str
     role: RoleEnum
+    is_active: bool
     created_at: datetime
 
     class Config:
